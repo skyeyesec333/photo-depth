@@ -1,0 +1,13 @@
+{
+  "name": "photo-depth",
+  "displayName": "Photo Depth",
+  "version": "0.1.0",
+  "description": "Give a single photo or painting real depth on the web: MoGe-2 depth maps, a three.js window effect with parallax that does not tear, and planes and points for placing things in the picture.",
+  "author": {
+    "name": "skyeyesec333"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/skyeyesec333/photo-depth",
+  "homepage": "https://github.com/skyeyesec333/photo-depth",
+  "keywords": ["depth-map", "moge", "parallax", "threejs", "webgl", "2.5d", "monocular-depth"]
+}

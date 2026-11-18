@@ -1,0 +1,17 @@
+{
+  "name": "photo-depth",
+  "description": "Depth for a single picture, on the web.",
+  "owner": {
+    "name": "skyeyesec333"
+  },
+  "plugins": [
+    {
+      "name": "photo-depth",
+      "source": "./",
+      "description": "Skill: photo-depth. MoGe-2 depth from one picture, a three.js window effect, and plane fitting to place things in the picture.",
+      "category": "development",
+      "tags": ["depth", "threejs", "parallax", "moge"],
+      "version": "0.1.0"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portal demo</title>
+<link rel="icon" href="data:,">
+<style>html,body{margin:0;height:100%;background:#0b0c10;overflow:hidden}canvas{display:block}#tip{position:fixed;left:12px;bottom:10px;color:#aab;font:13px system-ui}</style>
+<!-- Serve this folder over http (e.g. `python3 -m http.server 8000 --bind 127.0.0.1`) beside your picture and its
+     nearness map, then open portal.html?pic=city.jpg&near=city-near.webp . Move the pointer to move the camera.
+     three.js comes from unpkg at a fixed version; to use a local copy, open with &three=./three.module.js -->
+<script>
+  const q = new URLSearchParams(location.search);
+  const local = q.get("three");
+  // only a same-folder file may replace the CDN copy: never load script from an address given in the URL
+  const three = local && /^\.\/[A-Za-z0-9._-]+\.js$/.test(local) ? local : "https://unpkg.com/three@0.160.0/build/three.module.js";
+  document.write(`<script type="importmap">${JSON.stringify({ imports: { three } })}<\/script>`);
+</script>
+<div id="tip">move the pointer: the picture should act like a window</div>
+<script type="module">
+import * as THREE from "three";
+import { makePortal } from "./portal.js";
+
+const q = new URLSearchParams(location.search);
+const file = (k, d) => { const v = q.get(k) || d; return /^[A-Za-z0-9._-]+$/.test(v) ? v : d; };  // same-folder names only
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.setSize(innerWidth, innerHeight);
+document.body.appendChild(renderer.domElement);
+const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, 0.1, 100);
+const REST = new THREE.Vector3(0, 0, 5);
+camera.position.copy(REST);
+
+const load = (u) => new Promise((ok, no) => new THREE.TextureLoader().load(u, ok, undefined, no));
+const [map, near] = await Promise.all([load(file("pic", "picture.jpg")), load(file("near", "picture-near.webp"))]);
+const aspect = map.image.width / map.image.height;
+const portal = makePortal({ map, near, width: 4, height: 4 / aspect });
+portal.setRest(REST);
+scene.add(portal.mesh);
+// a frame round the glass, so the window reads as a window
+const edge = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(4.05, 4 / aspect + 0.05)), new THREE.LineBasicMaterial({ color: 0x8890a0 }));
+scene.add(edge);
+
+const pointer = new THREE.Vector2();
+addEventListener("pointermove", (e) => pointer.set(e.clientX / innerWidth * 2 - 1, -(e.clientY / innerHeight * 2 - 1)));
+addEventListener("resize", () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); });
+// window.__view = [x, y] holds the camera at a pointer position (for automated checks)
+renderer.setAnimationLoop(() => {
+  const p = window.__view ? new THREE.Vector2(...window.__view) : pointer;
+  camera.position.set(REST.x + p.x * 1.6, REST.y + p.y * 0.9, REST.z);
+  camera.lookAt(0, 0, 0);
+  portal.update(camera);
+  renderer.render(scene, camera);
+});
+window.__ready = true;
+</script>
