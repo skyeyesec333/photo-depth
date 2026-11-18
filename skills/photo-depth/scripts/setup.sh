@@ -23,11 +23,12 @@ done
 [ -n "$PY" ] || die "needs Python 3.11-3.13 (PyTorch wheels lag new Pythons)"
 command -v git >/dev/null || die "needs git"
 
-# Pinned: MoGe's own installer asks for a Linux-only GPU package, so its dependencies are installed by hand.
+# Pinned commits for MoGe and its two git helpers (full hashes, as MoGe pins them); PyPI packages take current
+# versions, so a future major release may need a pin here. MoGe's own installer asks for a Linux-only GPU package, so its dependencies are installed by hand.
 MOGE_REPO=https://github.com/microsoft/MoGe.git
 MOGE_COMMIT=74fbce054ebed49800de42d0ad0e83495065719a
-UTILS3D="git+https://github.com/EasternJournalist/utils3d-moge.git@62f09d5"
-PIPELINE="git+https://github.com/EasternJournalist/pipeline.git@1c51139"
+UTILS3D="git+https://github.com/EasternJournalist/utils3d-moge.git@62f09d58509485564e24d5d9f6aac9ee9ebc0c37"
+PIPELINE="git+https://github.com/EasternJournalist/pipeline.git@1c511390d90226c00c101f34b84df26a0f8789b4"
 
 mkdir -p -- "$DEST"
 DEST=$(cd -- "$DEST" && pwd)

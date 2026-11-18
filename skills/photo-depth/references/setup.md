@@ -32,11 +32,12 @@ Check the licence of both the code and the weights, and check again before you r
 
 | Model | Gives | Licence (as published when this was written) |
 |---|---|---|
-| MoGe-2 (Microsoft) | metric depth, camera intrinsics, mask | MIT, code and weights |
+| MoGe-2 (Microsoft) | metric depth, camera intrinsics, mask | MIT, code and weights (its bundled DINOv2 module is Apache-2.0) |
 | Depth Anything V2 Small | relative depth | Apache-2.0 |
 | Depth Anything V2 Base / Large | relative depth | CC BY-NC 4.0: non-commercial |
-| Apple Depth Pro, Apple SHARP | metric depth / 3D | Apple's own terms; weights not for commercial use |
-| LaMa (inpainting, for back layers) | fills painted-out areas | Apache-2.0 |
+| Apple Depth Pro | metric depth | GitHub release: Apple's sample-code licence; the Hugging Face copy is tagged Apple's research licence (apple-amlr). Check which one you download |
+| Apple SHARP | 3D from one picture | weights for research only, no commercial use (LICENSE_MODEL) |
+| LaMa (inpainting, for back layers) | fills painted-out areas | code Apache-2.0; the big-lama weights state no licence |
 
 MoGe-2 is the default here because it is cleared for commercial use, gives the camera's field of view (needed to place
 things), and handles paintings and AI pictures well.

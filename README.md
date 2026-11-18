@@ -12,7 +12,7 @@ the frame like posters; with depth they behave like a view through glass.
 ## What the skill does
 
 1. **Sets up MoGe-2** (Microsoft, MIT licence for code and weights) in a folder of your choice, after asking, with
-   pinned versions (`scripts/setup.sh`).
+   pinned commits of MoGe and its helpers (`scripts/setup.sh`).
 2. **Estimates depth** (`scripts/depth.py`): a small nearness map for the web (10-25 KB), optionally a 16-bit
    distance map with the camera's field of view, and raw depth for measuring. It never downloads weights unless told to.
 3. **Makes the picture a window** (`examples/portal.js`, three.js): the far skyline holds its direction while the frame
@@ -51,8 +51,8 @@ By hand (`S` is the skill's `scripts/` folder, `ENV` the environment from `setup
 ```sh
 "$S/setup.sh" ~/depth-env --yes                                           # once; downloads ~1 GB of packages
 ~/depth-env/.venv/bin/python "$S/depth.py" city.jpg --out public/depth --allow-download   # first run fetches ~1.3 GB of weights
-~/depth-env/.venv/bin/python "$S/depth.py" city.jpg --out public/depth --npz
-~/depth-env/.venv/bin/python "$S/fit_plane.py" plane public/depth/city-depth.npz --box 410,120,520,260
+~/depth-env/.venv/bin/python "$S/depth.py" city.jpg --out depth-work --npz                 # raw depth stays out of public/
+~/depth-env/.venv/bin/python "$S/fit_plane.py" plane depth-work/city-depth.npz --box 410,120,520,260
 ```
 
 ## Requirements

@@ -14,7 +14,7 @@ near things shift with the frame more, and near things hide what is behind them.
 2. **Where the sky is.** For a pixel of the glass, the line of sight from the camera through it meets "infinity" at the
    same direction the rest view would see: `sky = ref + rn * (uv - cam) / cn` in window units.
 3. **The walk.** Between the glass (q = 1) and the sky (q = 0) the line of sight passes through every depth. The shader
-   samples the nearness map at 16 points along it, from near to far, and takes the first point where the map says
+   samples the nearness map at 17 points along it (18 texture reads with the picture itself), from near to far, and takes the first point where the map says
    "there is something at least this near here". It then interpolates between the two samples around that crossing,
    so steps don't show as bands.
 4. **Easing.** Far from the rest point the shift would run off the picture. `uEase` (0.2: a fifth of the window) makes

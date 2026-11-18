@@ -47,7 +47,8 @@ def args():
     if not 50 <= a.quality <= 100: die("--quality must be 50-100")
     if not 0 <= a.level <= 9: die("--level must be 0-9")
     if not (0 < a.near_m < a.far_m): die("--near-m must be > 0 and below --far-m")
-    if not re.fullmatch(r"[A-Za-z0-9._-]+/[A-Za-z0-9._-]+", a.model): die("--model must look like owner/name")
+    if not re.fullmatch(r"[A-Za-z0-9_-][A-Za-z0-9._-]*/[A-Za-z0-9_-][A-Za-z0-9._-]*", a.model) or ".." in a.model:
+        die("--model must be a Hugging Face id like owner/name")
     return a
 
 
@@ -83,10 +84,11 @@ def main():
     out_dir = os.path.realpath(a.out)
     stem = stem_of(a.picture)
 
-    img = cv2.imread(a.picture, cv2.IMREAD_UNCHANGED)
+    # IMREAD_COLOR applies the EXIF orientation (as browsers do, so depth and picture line up), gives 3 channels
+    # for grey or alpha pictures, and brings 16-bit pictures down to 8 bits.
+    img = cv2.imread(a.picture, cv2.IMREAD_COLOR)
     if img is None: die(f"could not read {a.picture} as an image")
-    if img.ndim == 2: img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
-    img = cv2.cvtColor(img[..., :3], cv2.COLOR_BGR2RGB)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     h, w = img.shape[:2]
     if w * h > 40_000_000: die(f"picture is {w}x{h}: resize it below 40 megapixels first")
 
@@ -94,7 +96,7 @@ def main():
     try:
         model = MoGeModel.from_pretrained(a.model).to(dev).eval()
     except Exception as e:  # offline and not cached, or a bad id
-        die(f"could not load {a.model} ({type(e).__name__}). If the weights are not downloaded yet, ask the user, then "
+        die(f"could not load {a.model} ({type(e).__name__}: {str(e)[:300]}). If the weights are not downloaded yet, ask the user, then "
             f"re-run with --allow-download (about 1.3 GB from huggingface.co for the default model).")
     with torch.no_grad():
         o = model.infer(torch.tensor(img / 255, dtype=torch.float32, device=dev).permute(2, 0, 1),
