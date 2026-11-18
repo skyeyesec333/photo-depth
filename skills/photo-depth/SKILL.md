@@ -13,8 +13,8 @@ description: Give a single photo, painting or AI-generated picture real depth on
 3. check     look at it from the extreme views you will really use
 ```
 
-`scripts/` and `examples/` mean the folders **in this skill's own directory** (installed as a plugin:
-`${CLAUDE_PLUGIN_ROOT}/skills/photo-depth/`), not the user's project. Set `S` to that `scripts/` folder and run
+`scripts/` and `examples/` mean the folders **in this skill's own directory** (`${CLAUDE_SKILL_DIR}`, for a plugin
+or a copied skill alike), not the user's project. Set `S` to that `scripts/` folder and run
 `"$S/depth.py"` and the others by full path.
 
 ## 0. Setup (once)
